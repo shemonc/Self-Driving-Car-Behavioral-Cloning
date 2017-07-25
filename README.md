@@ -97,7 +97,7 @@ In order to gauge how well the model was working, I split my image and steering 
 
 At the end of the process, the vehicle is able to drive autonomously around both track without leaving the road.
 
-####2. Final Model Architecture
+#### 2. Final Model Architecture
 
 I used the  NVIDIA'S PilotNet cnn network with an extra dropout layer added after the convolutional layers.
 According to NVIDIA, the convolutional layers are designed to perform feature extraction, and are chosen empirically  through a series of experiments that vary layer configurations. They use strided convolutions in the first three convolutional layers with a 2×2 stride and a 5×5 kernel, and a non-strided convolution with a 3×3 kernel size in the final two convolutional layers.
