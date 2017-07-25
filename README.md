@@ -133,15 +133,16 @@ I prefer to use RELU instead of ELU based on the recent experiment bellow, https
 which summarized the comparison of different activation layers
 as bellow,
 
-   Activation   Test Accuracy   Training Time (per epoch)
-     Relu          90.25%           76s
-     Elu           84.36%           76s
-     Soft Plus     2.85%            78s
-     TanH          83.41%           78s
-     Sigmoid       5.7%             90s
-     Linear        83.6%            131s
-     Soft Sign     85.95%           82s
-     Hard Sigmoid  5.7%             85s
+   Activation   Test Accuracy   Training Time (per epoch )
+
+     Relu          90.25%           76s                   
+     Elu           84.36%           76s                   
+     Soft Plus     2.85%            78s                   
+     TanH          83.41%           78s                   
+     Sigmoid       5.7%             90s                   
+     Linear        83.6%            131s                  
+     Soft Sign     85.95%           82s                   
+     Hard Sigmoid  5.7%             85s                   
 
 #### 3. Creation of the Training Set & Training Process
 
