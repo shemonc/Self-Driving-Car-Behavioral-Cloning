@@ -28,18 +28,20 @@ The goals / steps of this project are the following:
 [image3]: ./examples/original_image_geo_shifted.png "Geo Shifted Image"
 
 ---
-###Files Submitted & Code Quality
+### Files Submitted & Code Quality
 
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
+#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode (this is modified to adjust the throttle)
 * model.h5 containing a trained convolution neural network for cloning the driving behaviour on TRACK 1 
 * model_track_2.h5 containing a trained convolution neural network for cloning the driving behaviour on TRACK 2
+* run5.mp4 video to drive the car on Track 1
+* run4.mp4 video to drive the car on Track 2
 * README.md summarizing the results
 
-####2. Submission includes functional code
+#### 2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around both track by executing 
 ```sh
 python3 drive.py model.h5
@@ -50,7 +52,7 @@ and for track 2, see the comment on drive.py and section 'Conclusion' at the end
 python3 drive.py model_track_2.h5   
 ```
 
-####3. Submission code is usable and readable
+#### 3. Submission code is usable and readable
 
 The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
@@ -58,21 +60,17 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-First I applied a very basic network with just a flatten layer and output unit of 1 to make sure everything is working in a sense of readding the images and the corresponding steering angles and use keras to fit the model; as this is a regression network instead of a classification network, I use mean squar error as the loss function instead of cross entropy for the same reason. Idea is to minimize the difference between the steering measurement this network predicts and the ground truth steering measurement, I shuffle the data and use 20% of the data for validation set.
+First I applied a very basic network with just a flatten layer and an output unit of 1 to make sure everything is working in a sense of reading the images and the corresponding steering angles and use keras to fit the model; as this is a regression network instead of a classification network, mean squar error was used as the loss function instead of cross entropy. Idea is to minimize the difference between the steering measurement this network predicts and the ground truth steering measurement, I shuffle the data and use 20% of the data for validation set.
 
-Then I tried with LeNet CNN network which takes 32x32x1 but as the Convolutional layer from keras works with wide ranges of images, I able to use the images
+Then I tried with LeNet CNN network which takes 32x32x1 image only but as the Convolutional layer from keras works with wide ranges of images, I able to use the images
 here which are 160x320x3 without resizing them.
 
-Finally I moved to CNN network published by NVIDIA. 
+Finally I moved to PilotNet CNN published by NVIDIA. 
 
 
-####2. Attempts to reduce overfitting in the model
+#### 2. Attempts to reduce overfitting in the model
 
-The model was modified with a dropout layers in order to reduce overfitting by experiemnt in this
-netwrok.
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (see Data augmentation i.e. flip the image during special corner case, steering angle adjustment, apply Gausin 
-Blur/down sample the image etc.). The model was tested by running it through the simulator and ensuring that the vehicle could stay and run smoothly on the track 1.
+The model was modified with a dropout layers in order to reduce overfitting by experiemnt on both track. Also it was trained and validated on different data sets to ensure that the model was not overfitting (see Data augmentation i.e. flip the image during cornering, steering angle adjustment, applied Gausin Blur/DownSample the image etc.). The model was tested by running it through the simulator and ensuring that the vehicle could stay and run smoothly on the track 1.
  
 For track 2 I just make sure the car was on the road (either on left, middle and right lane) not falling off the track, this is due to less available data on this track (I trained it just enough to be on the road for the full track due to time constrain of this project submission)
 
@@ -82,42 +80,35 @@ The model used an adam optimizer, so the learning rate was not tuned manually
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination driving of clockwise and counterclock wise; use side (left and right) cameras to train the car how to recover the bias from left or right during cornering.
-
-For details about how I created the training data, see the next section. 
+Training data was chosen to keep the vehicle driving on the road. I used a combination driving of clockwise and counter-clockwise; use side (left and right) cameras to train the car how to recover the bias from left or right during cornering.For details about how I created the training data, see the next section. 
 
 ### Model Architecture and Training Strategy
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to
-
-My first step was to use a convolution neural network model similar to leNet, I thought this model might be appropriate and it is simple but then I learned as part of this self driving course that leNet was developed within the mind set of classifying digits and can take only 32x32 pixel images, the ability to process higher resolution images require larger and more convolutional layers and I found this model was overfitting in my experiemnt.
+My first step was to use a convolution neural network model similar to leNet, I thought this model might be appropriate and it is simple but then I learned as part of this self driving course that leNet was developed within the mind set of classifying digits and can take only 32x32 pixel images, the ability to process higher resolution images require larger and more convolutional layers and I found this model was overfitting during the validation.
 
 In contract, PilotNet from Nvidia was developed on the base to find the region in input images which makes the steering decisions, they call it the sailent objects, structure in camera images those are not relevant to driving, as they described in the paper here, https://arxiv.org/pdf/1704.07911.pdf, also this capability is derived from data without the need of hand-crafted rules. 
 
 In this self driving regression network we wanted to minimize the mean square error instead of reducing the cross-entropy which is for the classifying network and I decided to use PilotNet which gave better result in the given project.
 
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set(20%). I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting after few iterations and experiment I decided to introduce a dropout layer to dropout 40% which allowed me to train the network further without overfitting. The network must also learn how to recover from any deviation or the car will drift off the road slowly. The training data is therefore augmented with additional images from left and right camera which shows the car in different shifts from the center of the lane and rotations from the direction of the road.
+In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set(20%). The network must also learn how to recover from any deviation or the car will drift off the road slowly. The training data is therefore augmented with additional images from left and right camera which shows the car in different shifts from the center of the lane and rotations from the direction of the road.
 
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
+At the end of the process, the vehicle is able to drive autonomously around both track without leaving the road.
 
 ####2. Final Model Architecture
 
 I used the  NVIDIA'S PilotNet cnn network with an extra dropout layer added after the convolutional layers.
-According to NVIDIA, the convolutional layers are designed to perform feature extraction, and are chosen empirically 
-through a series of experiments that vary layer configurations. They use strided convolutions in the first three convolutional layers with a 2×2 stride and a 5×5 kernel, and a non-strided convolution with a 3×3 kernel size in 
-the final two convolutional layers.
+According to NVIDIA, the convolutional layers are designed to perform feature extraction, and are chosen empirically  through a series of experiments that vary layer configurations. They use strided convolutions in the first three convolutional layers with a 2×2 stride and a 5×5 kernel, and a non-strided convolution with a 3×3 kernel size in the final two convolutional layers.
 
 I found it helped reducing the overfitting of these model in the given track by adding a dropout layer after the flatten
 layer. Filters depth in this network is between 24 to 64.
 
 Here is a visualization of the Architecture
 
+Layer(type)                 Output Shape              Param#     
 
-Layer (type)                 Output Shape              Param #   
-=================================================================
 lambda-1 (Lambda)            (None, 160, 320, 3)       0         
 cropping2d-1 (Cropping2D)    (None, 65, 320, 3)        0         
 conv2d-1 (Conv2D)            (None, 31, 158, 24)       1824      
@@ -131,8 +122,6 @@ dense-1 (Dense)              (None, 100)               211300
 dense-2 (Dense)              (None, 50)                5050      
 dense-3 (Dense)              (None, 10)                510       
 dense-4 (Dense)              (None, 1)                 11        
-=================================================================
-
 Total params: 348,219
 Trainable params: 348,219
 Non-trainable params: 0
@@ -140,23 +129,21 @@ Non-trainable params: 0
  The model includes RELU layers to introduce nonlinearity, and the data is normalized in the model using a
    Keras lambda layer (code line 188). 
 
-I prefer to use RELU instead of ELU based on the recent experiment bellow,
-  https://ctjohnson.github.io/Capstone-Activation-Layers/, which summarized the comparison of different activation layers
+I prefer to use RELU instead of ELU based on the recent experiment bellow, https://ctjohnson.github.io/Capstone-Activation-Layers/
+which summarized the comparison of different activation layers
 as bellow,
 
-		Activation	Test Accuracy	Training Time (per epoch)
-			Relu	90.25%	76s
-			Elu	84.36%	76s
-			Soft Plus	2.85%	78s
-			TanH	83.41%	78s
-			Sigmoid	5.7%	90s
-			Linear	83.6%	131s
-			Soft Sign	85.95%	82s
-			Hard Sigmoid	5.7%	85s
+   Activation   Test Accuracy   Training Time (per epoch)
+     Relu          90.25%           76s
+     Elu           84.36%           76s
+     Soft Plus     2.85%            78s
+     TanH          83.41%           78s
+     Sigmoid       5.7%             90s
+     Linear        83.6%            131s
+     Soft Sign     85.95%           82s
+     Hard Sigmoid  5.7%             85s
 
-
-
-####3. Creation of the Training Set & Training Process
+#### 3. Creation of the Training Set & Training Process
 
 On Track 1,
 
