@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 
 '''
-opne the cvs fils from data dir, read each line and store them into
+Open the cvs fils from data dir, read each line and store them into
 samples list.
 '''
 samples = []
@@ -24,7 +24,7 @@ with open('./data/driving_log.csv') as csvfile:
 '''
 Store left, center and middle images from each line and the corresponding
 steering angles, an empirical correction of 0.2 is applied to steering
-angle for left and right cameera image.
+angle for left and right camera image.
 '''
 images = []
 measurements = []
@@ -57,7 +57,7 @@ for sample in samples:
 
         '''
         Create adjusted steering measurements for the side camera images.
-        these side cameera images will be used to avoid bias towards left
+        these side camera images will be used to avoid bias towards left
         or right turn.
         '''
         correction = 0.2
@@ -135,14 +135,6 @@ def generator(samples, sample_measurements, batch_size=32):
                     augmented_measurements.append(steering_angle * -1.0)
 
                     '''
-                    Initially I used it but this overfits the model as per
-                    my observation so I am not using it for now.
-                    # Geo transform
-                    #print("sample.shape", sample.shape)
-                    img = geo_transform_image(image, 10, 10)
-                    augmented_images.append(img)
-                    augmented_measurements.append(steering_angle)
-
                     # Geo transform flip image
                     #print("sample.shape", sample.shape)
                     rows, cols, dim = flip_image.shape
@@ -154,7 +146,8 @@ def generator(samples, sample_measurements, batch_size=32):
             X_train = np.array(augmented_images)
             y_train = np.array(augmented_measurements)
             yield sklearn.utils.shuffle(X_train, y_train)
-# compile and train the model using the generator function
+
+# Compile and train the model using the generator function
 batch_size = 64
 total_epochs = 5
 
