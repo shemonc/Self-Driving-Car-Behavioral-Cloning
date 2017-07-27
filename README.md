@@ -245,3 +245,12 @@ I also like to add, AWS gpu support is essential specially for track 2 to tune t
 time limit. I observed  dramatic increase in computing performace while using CUDA library invented by NVIDIA on AWS's gpu
 compare to tensor flow 2.0 or above running on my Intel cpu. 
 
+#### 5. References
+
+https://www.youtube.com/watch?v=rpxZ87YFg0M
+http://selfdrivingcars.mit.edu/
+http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf
+http://jacobgil.github.io/deeplearning/vehicle-steering-angle-visualizations
+http://medium.com/udacity/teaching-a-machine-to-steer-a-car-d73217f2492c
+http://chatbotslife.com/using-augmentation-to-mimic-human-driving-496b569760a9
+Michael A. Nielsen, "Neural Networks and Deep Learning", Determination Press, 2015
